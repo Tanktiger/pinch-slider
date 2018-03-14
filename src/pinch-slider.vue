@@ -188,7 +188,7 @@
                 let windowWidth = document.body.clientWidth;
                 let direction = this.lastIndex < this.currIndex ? "next" : "previous";
                 let step = this.lastIndex === this.currIndex - 1 ? "next" : this.lastIndex === this.currIndex + 1 ? "previous" : "jump";
-
+                console.log(this.currIndex, this.maxCachedSize, this.currentCacheStartIndex, step)
                 //time to swap slides dom cache
                 if(this.currIndex < this.currentCacheStartIndex + 2 || this.currIndex > this.currentCacheStartIndex + (this.maxCachedSize - 2)){
                     this.maxCachedSize = Math.min(this.slides.length, 15);
@@ -200,7 +200,7 @@
                         this.$el['translateX'] = -windowWidth * (this.currIndex - this.currentCacheStartIndex + 1);
                     }
                 }
-
+                console.log(this.slidesDoms, this.slidesDoms[this.currIndex - this.currentCacheStartIndex]);
                 if(this.slidesDoms[this.currIndex - this.currentCacheStartIndex]){
                     this.curSlideImg = this.slidesDoms[this.currIndex - this.currentCacheStartIndex].childNodes[0];
                     this.ratio = this.curSlideImg.naturalHeight/this.curSlideImg.naturalWidth;
@@ -286,7 +286,7 @@
             },
 
             swipe: function (evt) {
-                console.log('swipe', evt);
+                console.log('swipe', evt, this.slides.length);
                 if(this.currentScale > 1){
                     return;
                 }
