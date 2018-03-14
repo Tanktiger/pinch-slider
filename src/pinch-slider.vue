@@ -62,7 +62,6 @@
                  v-finger:multipoint-start="multipointStart"
                  v-finger:multipoint-end="multipointEnd"
                  v-finger:pinch="pinch"
-                 v-finger:swipe.stop.prevent="imageSwipe"
                  v-finger:press-move="pressMove"
                  v-finger:double-tap="doubleTap"
                  v-finger:single-tap="singleTap"
@@ -288,8 +287,6 @@
 
             swipe: function (evt) {
                 console.log('swipe', evt);
-                evt.cancelBubble = true;
-                evt.preventDefault();
                 if(this.currentScale > 1){
                     return;
                 }
@@ -304,12 +301,6 @@
                     }
                 }
                 return true;
-            },
-
-            imageSwipe: function (evt) {
-                console.log('imageSwipe', evt);
-                evt.cancelBubble = true;
-                evt.preventDefault();
             },
 
             pinch: function (evt) {
