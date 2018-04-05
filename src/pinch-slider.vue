@@ -304,6 +304,7 @@
             },
 
             pinch: function (evt) {
+//                console.log(JSON.parse(JSON.stringify(evt)));
                 if(!this.multipointFlag){
                     this.multipointFlag = setTimeout(() => {
                         this.multipointFlag = 0;
@@ -320,19 +321,27 @@
                 }
 
                 let scale = evt.scale ? evt.scale : evt.zoom;
-
-                if(this.currentScale * scale < 1){
+                if (this.currentScale * scale < 1) {
+                    // reset
                     this.curSlideImg.width = window.innerWidth;
                     this.curSlideImg.height = window.innerWidth * this.ratio;
-                }else if(this.currentScale * scale < 10){
+                } else if (this.currentScale * scale < 10) {
                     this.curSlideImg.width = this.currentScale * scale * window.innerWidth;
                     this.curSlideImg.height = this.currentScale * scale * window.innerWidth * this.ratio;
                 }
-
-                if(scale < 1) {
+                console.log(this.curSlideImg.translateX, this.curSlideImg.translateY);
+                if (scale < 1) {
                     this.curSlideImg.translateX = 0;
                     this.curSlideImg.translateY = 0;
+                } else if (evt.changedTouches && evt.changedTouches[0]) {
+                    let x = (window.innerWidth / 2) - (evt.changedTouches[0].pageX);
+                    let y = (window.innerHeight / 2) - (evt.changedTouches[0].pageY);
+                    console.log(scale, x, y, x*scale, y*scale, window.innerWidth, window.innerHeight, evt.changedTouches[0], evt.target);
+                    this.curSlideImg.translateX = x*scale;
+                    this.curSlideImg.translateY = y*scale;
                 }
+
+                console.log('---------------------------------------');
                 evt.cancelBubble=true;
                 evt.preventDefault();
             },
@@ -364,23 +373,39 @@
                 evt.preventDefault();
             },
 
-            multipointEnd: function () {
+            multipointEnd: function (evt) {
+                console.log("multipointEnd", evt, this.curSlideImg);
                 this.currentScale = this.curSlideImg.width/window.innerWidth;
             },
 
-            doubleTap: function () {
+            doubleTap: function (event) {
+                console.log("doubleTap");
+                console.log(event);
+                let x = 0;
+                let y = 0;
+
+                if (event.changedTouches && event.changedTouches[0]) {
+                    console.log(event.changedTouches[0], event.target.offsetLeft, event.target.offsetTop);
+                    x = (window.innerWidth / 2) - (event.changedTouches[0].pageX - event.target.offsetLeft);
+                    y = (window.innerHeight / 2) - (event.changedTouches[0].pageY - event.target.offsetTop);
+                }
+                console.log(x, y, this.curSlideImg.width, window.innerWidth, window.innerHeight);
                 if(this.curSlideImg.width === window.innerWidth){
                     new To(this.curSlideImg, 'width', window.innerWidth * 2, 200, this.ease);
                     new To(this.curSlideImg, 'height', window.innerWidth * this.ratio * 2, 200, this.ease, function () {});
-                    new To(this.curSlideImg, 'translateX', 0, 200, this.ease, function () {});
+                    new To(this.curSlideImg, 'translateX', x, 200, this.ease, function () {});
+                    new To(this.curSlideImg, 'translateY', y, 200, this.ease, function () {});
                     this.currentScale = 2;
-                }else{
+                } else {
+                    // reset
                     new To(this.curSlideImg, 'width', window.innerWidth, 200, this.ease);
                     new To(this.curSlideImg, 'height', window.innerWidth * this.ratio, 200, this.ease, function () {});
                     new To(this.curSlideImg, 'translateX', 0, 200, this.ease, function () {});
                     new To(this.curSlideImg, 'translateY', 0, 200, this.ease, function () {});
                     this.currentScale = 1;
                 }
+                event.cancelBubble=true;
+                event.preventDefault();
             },
 
             singleTap: function (evt) {
@@ -403,19 +428,19 @@
                     evt.preventDefault();
                 }
             },
-            touchStart: function () {
-                //console.log('onTouchStart');
+            touchStart: function (evt) {
+//                console.log('onTouchStart', evt);
             },
 
             touchMove: function (evt) {
-                //console.log('onTouchMove');
+                console.log('onTouchMove', evt);
 //            if (Math.abs(evt.deltaX) >= Math.abs(evt.deltaY)) {
 //                evt.preventDefault();
 //            }
             },
 
-            touchEnd: function () {
-                //console.log('onTouchEnd');
+            touchEnd: function (evt) {
+//                console.log('onTouchEnd', evt);
             },
 
             touchCancel: function () {
