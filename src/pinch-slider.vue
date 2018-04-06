@@ -326,6 +326,8 @@
                 console.log("this.curSlideImg.height:", JSON.stringify(this.curSlideImg.height));
                 console.log("oldScale width:", JSON.stringify(this.curSlideImg.width / window.innerWidth));
                 console.log("oldScale height:", JSON.stringify(this.curSlideImg.height / window.innerHeight));
+                console.log("offsetLeft oldWidth:", JSON.stringify(this.curSlideImg.offsetLeft));
+                console.log("offsetTop oldHeight:", JSON.stringify(this.curSlideImg.offsetTop));
                 let newWidth = scale * (this.curSlideImg.width / (this.curSlideImg.width / window.innerWidth));
                 let newHeight = scale * (this.curSlideImg.height / (this.curSlideImg.height / window.innerHeight));
                 if (this.currentScale * scale < 1) {
@@ -343,21 +345,53 @@
                     evt.preventDefault();
                     let middleX = (evt.touches[0].pageX + evt.touches[1].pageX) / 2;
                     let middleY = (evt.touches[0].pageY + evt.touches[1].pageY) / 2;
-                        //to get the position from the middle we need to calculate from the center
-                    let x = (newWidth / 2) - (middleX * scale);
-                    let y = (newHeight / 2) - (middleY * scale);
-                    console.log("this.currentScale:", this.currentScale);
-                    console.log("scale:", scale);
-                    console.log("x:", x);
-                    console.log("y:", y);
-                    console.log("newWidth", newWidth);
-                    console.log("newHeight:", newHeight);
-                    console.log("pageX:", evt.touches[0].pageX);
-                    console.log("pageY:", evt.touches[0].pageY);
-                    console.log("pageX:", evt.touches[1].pageX);
-                    console.log("pageY:", evt.touches[1].pageY);
-                    console.log("middleX:", middleX);
-                    console.log("middleY:", middleY);
+                    let halfHeight = (newHeight / 2);
+                    let halfWidth = (newWidth / 2);
+                    //to get the position from the middle we need to calculate from the center
+                    let x = halfWidth - (middleX * scale) - (this.curSlideImg.offsetLeft / scale);
+                    let y = halfHeight - (middleY * scale) - (this.curSlideImg.offsetTop / scale);
+
+                    //check if point is out of image
+                    if (x > halfWidth) {
+//                        console.log('####################');
+//                        console.log("point is left out");
+//                        console.log('####################');
+                        x = halfWidth;
+                        // yes the point is above the image
+                    } else if (-x > halfWidth) {
+//                        console.log('####################');
+//                        console.log("point is right out");
+//                        console.log('####################');
+                        x = -halfWidth
+                        //yes the point is under the image
+                    }
+                    if (y > halfHeight) {
+//                        console.log('####################');
+//                        console.log("point is above");
+//                        console.log('####################');
+                        y = halfHeight;
+                        // yes the point is above the image
+                    } else if (-y > halfHeight) {
+//                        console.log('####################');
+//                        console.log("point is under");
+//                        console.log('####################');
+                        y = -halfHeight;
+                        //yes the point is under the image
+                    }
+//                    console.log("this.currentScale:", this.currentScale);
+//                    console.log("scale:", scale);
+//                    console.log("x:", x);
+//                    console.log("y:", y);
+//                    console.log("newWidth", newWidth);
+//                    console.log("newHeight:", newHeight);
+//                    console.log("pageX:", evt.touches[0].pageX);
+//                    console.log("pageY:", evt.touches[0].pageY);
+//                    console.log("pageX:", evt.touches[1].pageX);
+//                    console.log("pageY:", evt.touches[1].pageY);
+//                    console.log("middleX:", middleX);
+//                    console.log("middleY:", middleY);
+//                    console.log("offsetLeft:", this.curSlideImg.offsetLeft);
+//                    console.log("offsetTop:", this.curSlideImg.offsetTop);
                     new To(this.curSlideImg, 'translateX', x, 10, this.ease, function () {});
                     new To(this.curSlideImg, 'translateY', y, 10, this.ease, function () {});
                 }
@@ -406,10 +440,49 @@
                 if(this.currentScale === 1){
                     let newWidth = this.curSlideImg.width * zoom;
                     let newHeight = this.curSlideImg.height * zoom;
+                    let halfHeight = (newHeight / 2);
+                    let halfWidth = (newWidth / 2);
                     if (evt.changedTouches && evt.changedTouches[0]) {
                         //to get the position from the middle we need to calculate from the center
-                        x = (newWidth / 2) - (evt.changedTouches[0].pageX) * zoom;
-                        y = (newHeight / 2) - (evt.changedTouches[0].pageY) * zoom;
+                        x = halfWidth - (evt.changedTouches[0].pageX * zoom) - (this.curSlideImg.offsetLeft / zoom);
+                        y = halfHeight - (evt.changedTouches[0].pageY * zoom) - (this.curSlideImg.offsetTop / zoom);
+//                        console.log("this.currentScale:", this.currentScale);
+//                        console.log("x:", x);
+//                        console.log("y:", y);
+//                        console.log("newWidth", newWidth);
+//                        console.log("newHeight:", newHeight);
+//                        console.log("pageX:", evt.changedTouches[0].pageX);
+//                        console.log("pageY:", evt.changedTouches[0].pageY);
+//                        console.log("offsetLeft:", this.curSlideImg.offsetLeft);
+//                        console.log("offsetTop:", this.curSlideImg.offsetTop);
+//                        console.log("getBoundingClientRect:", this.curSlideImg.getBoundingClientRect());
+                        //check if point is out of image
+                        if (x > halfWidth) {
+//                        console.log('####################');
+//                        console.log("point is left out");
+//                        console.log('####################');
+                            x = halfWidth;
+                            // yes the point is above the image
+                        } else if (-x > halfWidth) {
+//                        console.log('####################');
+//                        console.log("point is right out");
+//                        console.log('####################');
+                            x = -halfWidth
+                            //yes the point is under the image
+                        }
+                        if (y > halfHeight) {
+//                        console.log('####################');
+//                        console.log("point is above");
+//                        console.log('####################');
+                            y = halfHeight;
+                            // yes the point is above the image
+                        } else if (-y > halfHeight) {
+//                        console.log('####################');
+//                        console.log("point is under");
+//                        console.log('####################');
+                            y = -halfHeight;
+                            //yes the point is under the image
+                        }
                     }
                     new To(this.curSlideImg, 'width', newWidth, 200, this.ease);
                     new To(this.curSlideImg, 'height', newHeight, 200 , this.ease, function () {});
