@@ -307,7 +307,7 @@
 //                console.log(this.curSlideImg);
                 if(!this.multipointFlag){
                     this.multipointFlag = setTimeout(() => {
-                        this.multipointFlag = 0;
+                        this.multipointFlag = 0;1
                     },500);
                 }else{
                     clearTimeout(this.multipointFlag);
@@ -322,12 +322,12 @@
 
                 let scale = evt.scale ? evt.scale : evt.zoom;
 //                let scale = 5;
-                console.log("this.curSlideImg.width:", JSON.stringify(this.curSlideImg.width));
-                console.log("this.curSlideImg.height:", JSON.stringify(this.curSlideImg.height));
-                console.log("oldScale width:", JSON.stringify(this.curSlideImg.width / window.innerWidth));
-                console.log("oldScale height:", JSON.stringify(this.curSlideImg.height / window.innerHeight));
-                console.log("offsetLeft oldWidth:", JSON.stringify(this.curSlideImg.offsetLeft));
-                console.log("offsetTop oldHeight:", JSON.stringify(this.curSlideImg.offsetTop));
+//                console.log("this.curSlideImg.width:", JSON.stringify(this.curSlideImg.width));
+//                console.log("this.curSlideImg.height:", JSON.stringify(this.curSlideImg.height));
+//                console.log("oldScale width:", JSON.stringify(this.curSlideImg.width / window.innerWidth));
+//                console.log("oldScale height:", JSON.stringify(this.curSlideImg.height / window.innerHeight));
+//                console.log("offsetLeft oldWidth:", JSON.stringify(this.curSlideImg.offsetLeft));
+//                console.log("offsetTop oldHeight:", JSON.stringify(this.curSlideImg.offsetTop));
                 let newWidth = scale * (this.curSlideImg.width / (this.curSlideImg.width / window.innerWidth));
                 let newHeight = scale * (this.curSlideImg.height / (this.curSlideImg.height / window.innerHeight));
                 if (this.currentScale * scale < 1) {
@@ -335,8 +335,10 @@
                     this.curSlideImg.width = window.innerWidth;
                     this.curSlideImg.height = window.innerWidth * this.ratio;
                 } else if (this.currentScale * scale < 10) {
-                    new To(this.curSlideImg, 'width', newWidth, 10, this.ease);
-                    new To(this.curSlideImg, 'height', newHeight, 10, this.ease, function () {});
+                    new To(this.curSlideImg, 'scaleX', scale, 20, this.ease, function () {});
+                    new To(this.curSlideImg, 'scaleY', scale, 20, this.ease, function () {});
+//                    new To(this.curSlideImg, 'width', newWidth, 10, this.ease);
+//                    new To(this.curSlideImg, 'height', newHeight, 10, this.ease, function () {});
                 }
                 if (scale < 1) {
                     this.curSlideImg.translateX = 0;
@@ -353,28 +355,16 @@
 
                     //check if point is out of image
                     if (x > halfWidth) {
-//                        console.log('####################');
-//                        console.log("point is left out");
-//                        console.log('####################');
                         x = halfWidth;
                         // yes the point is above the image
                     } else if (-x > halfWidth) {
-//                        console.log('####################');
-//                        console.log("point is right out");
-//                        console.log('####################');
                         x = -halfWidth
                         //yes the point is under the image
                     }
                     if (y > halfHeight) {
-//                        console.log('####################');
-//                        console.log("point is above");
-//                        console.log('####################');
                         y = halfHeight;
                         // yes the point is above the image
                     } else if (-y > halfHeight) {
-//                        console.log('####################');
-//                        console.log("point is under");
-//                        console.log('####################');
                         y = -halfHeight;
                         //yes the point is under the image
                     }
@@ -396,7 +386,7 @@
                     new To(this.curSlideImg, 'translateY', y, 10, this.ease, function () {});
                 }
 
-                console.log('---------------------------------------');
+//                console.log('---------------------------------------');
                 evt.cancelBubble=true;
                 evt.preventDefault();
             },
@@ -437,7 +427,8 @@
                 let y = 0;
                 let zoom = 2;
 
-                if(this.currentScale === 1){
+                console.log(JSON.stringify(this.curSlideImg.scaleX));
+                if(this.curSlideImg.scaleX === 1){
                     let newWidth = this.curSlideImg.width * zoom;
                     let newHeight = this.curSlideImg.height * zoom;
                     let halfHeight = (newHeight / 2);
@@ -446,56 +437,33 @@
                         //to get the position from the middle we need to calculate from the center
                         x = halfWidth - (evt.changedTouches[0].pageX * zoom) - (this.curSlideImg.offsetLeft / zoom);
                         y = halfHeight - (evt.changedTouches[0].pageY * zoom) - (this.curSlideImg.offsetTop / zoom);
-//                        console.log("this.currentScale:", this.currentScale);
-//                        console.log("x:", x);
-//                        console.log("y:", y);
-//                        console.log("newWidth", newWidth);
-//                        console.log("newHeight:", newHeight);
-//                        console.log("pageX:", evt.changedTouches[0].pageX);
-//                        console.log("pageY:", evt.changedTouches[0].pageY);
-//                        console.log("offsetLeft:", this.curSlideImg.offsetLeft);
-//                        console.log("offsetTop:", this.curSlideImg.offsetTop);
-//                        console.log("getBoundingClientRect:", this.curSlideImg.getBoundingClientRect());
                         //check if point is out of image
                         if (x > halfWidth) {
-//                        console.log('####################');
-//                        console.log("point is left out");
-//                        console.log('####################');
                             x = halfWidth;
-                            // yes the point is above the image
                         } else if (-x > halfWidth) {
-//                        console.log('####################');
-//                        console.log("point is right out");
-//                        console.log('####################');
                             x = -halfWidth
-                            //yes the point is under the image
                         }
                         if (y > halfHeight) {
-//                        console.log('####################');
-//                        console.log("point is above");
-//                        console.log('####################');
                             y = halfHeight;
-                            // yes the point is above the image
                         } else if (-y > halfHeight) {
-//                        console.log('####################');
-//                        console.log("point is under");
-//                        console.log('####################');
                             y = -halfHeight;
-                            //yes the point is under the image
                         }
                     }
-                    new To(this.curSlideImg, 'width', newWidth, 200, this.ease);
-                    new To(this.curSlideImg, 'height', newHeight, 200 , this.ease, function () {});
+//                    new To(this.curSlideImg, 'width', newWidth, 200, this.ease);
+//                    new To(this.curSlideImg, 'height', newHeight, 200 , this.ease, function () {});
+                    new To(this.curSlideImg, 'scaleX', zoom, 200 , this.ease, function () {});
+                    new To(this.curSlideImg, 'scaleY', zoom, 200 , this.ease, function () {});
+                    new To(this.curSlideImg, 'webkitTransform', 'scale(2,2)', 200 , this.ease, function () {});
                     new To(this.curSlideImg, 'translateX', x, 200, this.ease, function () {});
                     new To(this.curSlideImg, 'translateY', y, 200, this.ease, function () {});
 
-                    this.currentScale = 2;
                 } else {
                     // reset
-                    new To(this.curSlideImg, 'width', window.innerWidth, 200, this.ease);
-                    new To(this.curSlideImg, 'height', window.innerWidth * this.ratio, 200, this.ease, function () {});
+                    new To(this.curSlideImg, 'scaleX', 1, 200, this.ease);
+                    new To(this.curSlideImg, 'scaleY', 1, 200, this.ease, function () {});
                     new To(this.curSlideImg, 'translateX', 0, 200, this.ease, function () {});
                     new To(this.curSlideImg, 'translateY', 0, 200, this.ease, function () {});
+
                     this.currentScale = 1;
                 }
                 evt.cancelBubble=true;
